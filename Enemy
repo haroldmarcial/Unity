@@ -1,0 +1,20 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Enemy : MonoBehaviour {
+
+	public int speed; // enemy speed
+
+	private GameObject player; // reference to player object
+
+	void Start () {
+		speed = 5;
+		player = GameObject.Find("Player");
+	}
+	
+	void Update () {
+    // Moving enemy object towards player object
+    transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+	}
+}
