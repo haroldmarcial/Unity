@@ -7,10 +7,13 @@ public class Player : MonoBehaviour {
 	private Transform transform; // reference to player transform
 
 	public int speed; // player speed
+	public bool hasSpear;
+	public int health;
 
 	// Use this for initialization
 	void Start () {
-
+		hasSpear = false;
+		health = 1;
 		speed = 3;
 
 		transform = GetComponent<Transform>();
@@ -18,7 +21,11 @@ public class Player : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
 		Move();
+		if (health == 0) {
+			Debug.Log ("you died");
+		}
 	}
 
 	void Move () {
@@ -41,5 +48,13 @@ public class Player : MonoBehaviour {
 		{
 			transform.Translate(new Vector3(0, 0, speed*Time.deltaTime));
 		}		
+	}
+
+	void OnTriggerEnter(Collider other){
+
+		if(other.gameObject.tag == "Spear"){
+			hasSpear = true;
+			other.gameObject.transform.parent = transform;
+		}
 	}
 }
