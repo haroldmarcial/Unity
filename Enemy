@@ -5,16 +5,67 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
 	public int speed; // enemy speed
+	private int health;
 
+	private bool inRange; // for enemy line of sight
 	private GameObject player; // reference to player object
+	private Player playerScript;
 
 	void Start () {
-		speed = 5;
+		speed = 2;
+		health = 3;
 		player = GameObject.Find("Player");
+
+		playerScript = player.GetComponent<Player>();
 	}
 	
 	void Update () {
-    // Moving enemy object towards player object
-    transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+		if(inRange == true && playerScript.health != 0){
+			// Moving enemy object towards player object
+        	transform.position = Vector3.MoveTowards(transform.position, player.transform.position, speed * Time.deltaTime);
+		}
+
+	}
+
+	void OnCollisionEnter(Collision other){
+
+		if (other.gameObject.name == "Player") {
+			if (playerScript.hasSpear) {
+				
+				health--;
+				if (health == 0) {
+					Debug.Log ("enemy down");
+					Destroy (gameObject);
+					return;
+				}
+				Debug.Log ("hasSpear hit");
+			} 
+			else {
+				
+				playerScript.health--;
+
+				if (playerScript.health == 0) {
+					Debug.Log ("you died");
+
+					Destroy (other.gameObject);
+					Application.LoadLevel(Application.loadedLevel);
+					return;
+				}
+				Debug.Log ("noSpear hit");
+
+			}
+		}
+		
+	}
+
+	void OnTriggerEnter(Collider other){
+		if (other.name == "Player") 
+			inRange = true;
+		
+	}
+
+	void OnTriggerExit(Collider other){
+		if(other.name == "Player")
+			inRange = false;
 	}
 }
